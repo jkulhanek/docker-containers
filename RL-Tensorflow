@@ -28,24 +28,39 @@ RUN cd /toolbox/lab && bazel build :deepmind_lab.so --define headless=osmesa --f
 # we will build the pip package
 RUN cd /toolbox/lab && \
   bazel build -c opt python/pip_package:build_pip_package --force_python=PY3 --host_force_python=PY3 && \
-  ./bazel-bin/python/pip_package/build_pip_package /tmp/dmlab_pkg && \
   mkdir /artifact && \
-  cp /tmp/dmlab_pkg/DeepMind_Lab-1.0-py3-none-any.whl /artifact/deepmindlab.whl
+  ./bazel-bin/python/pip_package/build_pip_package /artifact
+
+RUN pip install /artifact/DeepMind_Lab-1.0-py3-none-any.whl
 
 
+
+# Output container
 FROM tensorflow/tensorflow:latest-py3
 RUN apt-get update && apt-get install -y \
-  libffi \
+  lua5.1 \
+  liblua5.1-0-dev \
+  libffi-dev \
   gettext \
-  freeglut3 \
-  libsdl2 \
-  libosmesa6 \
-  python3-numpy
+  freeglut3-dev \
+  libsdl2-dev \
+  libosmesa6-dev \
+  python3-dev \
+  python3-numpy \
+  realpath \
+  build-essential \
+  zip \
+  git
+
 
 # Redirect display
 RUN echo "#!/bin/bash\nrm /tmp/.X1-lock /tmp/.X11-unix/X1 \nvncserver :1 -randr -geometry 1280x800 -depth 24 && tail -F /root/.vnc/*.log" | tee /opt/vnc.sh
 ENV DISPLAY :1
 
 # Install package
-COPY --from=artefact-builder /artifact/deepmindlab.whl /tmp/deepmindlab.whl
-RUN pip install /tmp/deepmindlab.whl
+COPY --from=artefact-builder /artifact/DeepMind_Lab-1.0-py3-none-any.whl /tmp/DeepMind_Lab-1.0-py3-none-any.whl
+RUN pip install /tmp/DeepMind_Lab-1.0-py3-none-any.whl
+
+# Install gym and other packages
+RUN pip install gym && \
+  pip install git+https://github.com/jkulhanek/gym-maze-env.git
