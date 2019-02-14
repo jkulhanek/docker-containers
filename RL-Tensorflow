@@ -36,7 +36,7 @@ RUN pip install /artifact/DeepMind_Lab-1.0-py3-none-any.whl
 
 
 # Output container
-FROM tensorflow/tensorflow:latest-py3
+FROM tensorflow/tensorflow:latest${TENSORFLOW_TAG}-py3
 RUN apt-get update && apt-get install -y \
   lua5.1 \
   liblua5.1-0-dev \
