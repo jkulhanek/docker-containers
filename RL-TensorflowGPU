@@ -78,16 +78,16 @@ RUN apt-get update && apt-get install -y \
   zip \
   git
 
-RUN pip3 install --user --upgrade tensorflow-gpu
-RUN pip3 install matplotlib
-
-
 # Redirect display
 RUN echo "#!/bin/bash\nrm /tmp/.X1-lock /tmp/.X11-unix/X1 \nvncserver :1 -randr -geometry 1280x800 -depth 24 && tail -F /root/.vnc/*.log" | tee /opt/vnc.sh
 ENV DISPLAY :1
 
 # Install package
 COPY --from=artefact-builder /artifact/DeepMind_Lab-1.0-py3-none-any.whl /tmp/DeepMind_Lab-1.0-py3-none-any.whl
+
+RUN umask 022
+RUN pip3 install --user --upgrade tensorflow-gpu
+RUN pip3 install matplotlib
 RUN pip3 install /tmp/DeepMind_Lab-1.0-py3-none-any.whl
 
 # Install gym and other packages
