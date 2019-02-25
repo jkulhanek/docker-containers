@@ -87,7 +87,7 @@ COPY --from=artefact-builder /artifact/DeepMind_Lab-1.0-py3-none-any.whl /tmp/De
 
 RUN umask 022
 RUN pip3 install --upgrade tensorflow-gpu
-RUN pip3 install matplotlib
+RUN pip3 install matplotlib six
 RUN pip3 install /tmp/DeepMind_Lab-1.0-py3-none-any.whl
 
 # Install gym and other packages
