@@ -86,8 +86,9 @@ ENV DISPLAY :1
 COPY --from=artefact-builder /artifact/DeepMind_Lab-1.0-py3-none-any.whl /tmp/DeepMind_Lab-1.0-py3-none-any.whl
 
 RUN umask 022
+RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade tensorflow-gpu
-RUN pip3 install tensorflow_probability matplotlib six keras keras.applications trfl seaborn visdom
+RUN pip3 install tensorflow_probability matplotlib six keras trfl seaborn visdom keras.applications
 RUN pip3 install /tmp/DeepMind_Lab-1.0-py3-none-any.whl
 
 # Matplotlib disable display
