@@ -1,0 +1,11 @@
+FROM ubuntu:latest
+RUN apt-get update && apt-get install curl git gnupg2 build-essential libxi-dev libglu1-mesa-dev libglew-dev libvips -y
+RUN apt-get install xvfb xserver-xephyr vnc4server -y
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs
+RUN git clone https://github.com/minosworld/minos.git
+RUN cd minos/minos/server && npm install && cd ../../..
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt install python3 python3-pip python3-tk -y 
+RUN cd minos && pip3 install gym && pip3 install -e . -r requirements.txt && cd gym pip3 install -e . && cd ../..
+
+CMD [ "node","/minos/minos/server/server.js", "-p", "26001"]

@@ -94,6 +94,19 @@ RUN pip3 install /tmp/DeepMind_Lab-1.0-py3-none-any.whl
 # Matplotlib disable display
 RUN mkdir /root/.config && mkdir /root/.config/matplotlib && rm /usr/local/lib/python3.5/dist-packages/matplotlib/mpl-data/matplotlibrc && echo "backend : Agg" >> /usr/local/lib/python3.5/dist-packages/matplotlib/mpl-data/matplotlibrc
 
+# Add minos
+RUN apt-get install build-essential libxi-dev libglu1-mesa-dev libglew-dev libvips -y && \
+  cd /tmp && git clone https://github.com/minosworld/minos && \
+  curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+  apt-get install -y nodejs && \
+  cd minos/minos/server && \
+  npm install && \
+  cd ../.. && \
+  pip3 install -e . -r requirements.txt && \
+  cd /root
+  
+ENV NODE_BASE_URL /datasets
+
 # Install baselines
 RUN pip3 install git+https://github.com/openai/baselines.git
 
